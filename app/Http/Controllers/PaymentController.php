@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Payment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -17,6 +18,7 @@ class PaymentController extends Controller
 
     public function show(Payment $payment)
     {
+
         return view('payments.show', ['payment' => $payment]);
     }
 
@@ -34,7 +36,7 @@ class PaymentController extends Controller
 
         $format_check = $formFields['debtors'];
 
-        if (preg_match("/^(\w *[,; ] *)*\w$/", $format_check)) {
+        if (!preg_match("/^(\w *[,; ] *)*[a-z0-9\w]$/", $format_check)) {
             return redirect('/');
         }
 
@@ -65,6 +67,17 @@ class PaymentController extends Controller
         $payment->update($formFields);
 
         return redirect("payments/{$payment->id}")->with('succes', 'Payment updated');
+    }
+
+
+    public function debts()
+    {
+        $columns = Payment::select('payer', 'debtors', 'amount')->get();
+        foreach ($columns as $key => $value) {
+            $columns[$key] = [$value->payer, preg_split("/[;, ]+/", $value->debtors), $value->amount];
+        }
+        dd($columns);
+        return view('payments');
     }
 
 

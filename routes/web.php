@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PaymentController;
+use GuzzleHttp\Middleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,7 @@ Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->mid
 //Payment detail
 Route::get('/payments/{payment}', [PaymentController::class, 'show'])->middleware('auth');
 
+Route::get('/debts', [PaymentController::class, 'debts']);
 
 
 
